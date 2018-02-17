@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac.csproj", "{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "doLittle.DependencyInversion.Autofac", "Source\doLittle.DependencyInversion.Autofac.csproj", "{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Specifications\Autofac.csproj", "{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "doLittle.DependencyInversion.Autofac.Specs", "Specifications\doLittle.DependencyInversion.Autofac.csproj", "{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

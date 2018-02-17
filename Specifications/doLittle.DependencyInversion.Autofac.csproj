@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Source\Autofac.csproj" />
+    <ProjectReference Include="..\Source\doLittle.DependencyInversion.Autofac.csproj" />
   </ItemGroup>
 
 </Project>
