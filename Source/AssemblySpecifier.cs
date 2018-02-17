@@ -6,20 +6,19 @@ using doLittle.Assemblies;
 using doLittle.Assemblies.Configuration;
 using doLittle.Assemblies.Rules;
 
-namespace doLittle.Autofac
+namespace doLittle.DependencyInversion.Autofac
 {
     /// <summary>
     /// Reperesents an <see cref="ICanSpecifyAssemblies">assembly specifier</see> for client aspects
     /// </summary>
     public class AssemblySpecifier : ICanSpecifyAssemblies
     {
-#pragma warning disable 1591 // Xml Comments
+        /// <inheritdoc/>
         public void Specify(IAssemblyRuleBuilder builder)
         {
             builder.ExcludeAssembliesStartingWith(
                 "Autofac"
             );
         }
-#pragma warning disable 1591 // Xml Comments
     }
 }
