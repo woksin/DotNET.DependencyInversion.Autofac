@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac.csproj", "{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Specifications\Autofac.csproj", "{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}.Release|x64.Build.0 = Release|x64
 		{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}.Release|x86.ActiveCfg = Release|x86
 		{26196C1C-98FD-447E-95DF-7B57AA3C1A2B}.Release|x86.Build.0 = Release|x86
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|x64.ActiveCfg = Debug|x64
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|x64.Build.0 = Debug|x64
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|x86.ActiveCfg = Debug|x86
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Debug|x86.Build.0 = Debug|x86
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|x64.ActiveCfg = Release|x64
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|x64.Build.0 = Release|x64
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|x86.ActiveCfg = Release|x86
+		{ABCDD70F-2BB6-4B60-9DA3-D8E6630B7272}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
