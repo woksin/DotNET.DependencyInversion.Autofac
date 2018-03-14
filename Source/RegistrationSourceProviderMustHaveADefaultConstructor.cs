@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 using System;
 
-namespace doLittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac
 {
     /// <summary>
     /// Exception that gets thrown when a <see cref="ICanProvideRegistrationSources"/> does not have a default constructor

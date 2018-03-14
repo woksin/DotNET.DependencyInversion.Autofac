@@ -3,13 +3,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>doLittle.DependencyInversion.Autofac</AssemblyName>
+    <AssemblyName>Dolittle.DependencyInversion.Autofac</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.2" />
-    <PackageReference Include="doLittle.Assemblies" Version="2.0.0-alpha2*" />
-    <PackageReference Include="doLittle.DependencyInversion" Version="2.0.0-alpha2*" />
+    <PackageReference Include="Dolittle.Assemblies" Version="2.0.0-alpha2*" />
+    <PackageReference Include="Dolittle.DependencyInversion" Version="2.0.0-alpha2*" />
   </ItemGroup>
 
 </Project>

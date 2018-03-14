@@ -10,12 +10,12 @@ using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
-using doLittle.Assemblies;
-using doLittle.Collections;
-using doLittle.Execution;
-using doLittle.Reflection;
+using Dolittle.Assemblies;
+using Dolittle.Collections;
+using Dolittle.Execution;
+using Dolittle.Reflection;
 
-namespace doLittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac
 {
     /// <summary>
     /// Represents async implementation of <see cref="ICanProvideContainer"/> specific for Autofac

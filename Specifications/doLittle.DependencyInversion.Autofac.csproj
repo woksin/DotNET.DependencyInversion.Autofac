@@ -3,11 +3,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>doLittle.DependencyInversion.Autofac.Specs</AssemblyName>
+    <AssemblyName>Dolittle.DependencyInversion.Autofac.Specs</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Source\doLittle.DependencyInversion.Autofac.csproj" />
+    <ProjectReference Include="..\Source\Dolittle.DependencyInversion.Autofac.csproj" />
   </ItemGroup>
 
 </Project>

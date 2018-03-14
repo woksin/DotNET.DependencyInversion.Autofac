@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using Autofac.Core;
 
-namespace doLittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac
 {
     /// <summary>
     /// Defines a provider of <see cref="IRegistrationSource"/> implementations

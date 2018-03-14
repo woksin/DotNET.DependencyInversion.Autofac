@@ -5,7 +5,7 @@
 using System;
 using Autofac;
 
-namespace doLittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac
 {
     /// <summary>
     /// Represents an implementation of <see cref="IContainer"/> specific for Autofac
