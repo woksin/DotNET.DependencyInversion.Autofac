@@ -6,18 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using doLittle.Assemblies;
 using doLittle.Collections;
+using doLittle.Execution;
 using doLittle.Reflection;
 
 namespace doLittle.DependencyInversion.Autofac
 {
-
     /// <summary>
     /// Represents async implementation of <see cref="ICanProvideContainer"/> specific for Autofac
     /// </summary>
@@ -30,8 +29,12 @@ namespace doLittle.DependencyInversion.Autofac
             var allAssemblies = assemblies.GetAll().ToArray();
             containerBuilder.RegisterAssemblyModules(allAssemblies);
 
-            var selfBindingRegistrationSource = new AnyConcreteTypeNotAlreadyRegisteredSource();
+            var selfBindingRegistrationSource = new AnyConcreteTypeNotAlreadyRegisteredSource(type => 
+                !type.Namespace.StartsWith("Microsoft") &&
+                !type.Namespace.StartsWith("System"));
+
             selfBindingRegistrationSource.RegistrationConfiguration = HandleLifeCycleFor;
+            
             containerBuilder.RegisterSource(selfBindingRegistrationSource);
 
             DiscoverAndRegisterRegistrationSources(containerBuilder, allAssemblies);
@@ -45,10 +48,10 @@ namespace doLittle.DependencyInversion.Autofac
         static void HandleLifeCycleFor(IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> builder)
         {
             var service = builder.RegistrationData.Services.First();
-            if( service is TypedService )
+            if (service is TypedService)
             {
                 var typedService = service as TypedService;
-                if( typedService.ServiceType.HasAttribute<SingletonAttribute>()) builder.SingleInstance();
+                if (typedService.ServiceType.HasAttribute<SingletonAttribute>())builder.SingleInstance();
             }
         }
 
@@ -61,7 +64,7 @@ namespace doLittle.DependencyInversion.Autofac
                     if (binding.Strategy is Strategies.Type)
                     {
                         var registrationBuilder = containerBuilder.RegisterGeneric(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
-                        if (binding.Scope is Scopes.Singleton) registrationBuilder = registrationBuilder.SingleInstance();
+                        if (binding.Scope is Scopes.Singleton)registrationBuilder = registrationBuilder.SingleInstance();
                     }
                 }
                 else
@@ -69,7 +72,7 @@ namespace doLittle.DependencyInversion.Autofac
                     if (binding.Strategy is Strategies.Type)
                     {
                         var registrationBuilder = containerBuilder.RegisterType(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
-                        if (binding.Scope is Scopes.Singleton) registrationBuilder = registrationBuilder.SingleInstance();
+                        if (binding.Scope is Scopes.Singleton)registrationBuilder = registrationBuilder.SingleInstance();
                     }
                     else if (binding.Strategy is Strategies.Constant)
                     {
@@ -77,8 +80,8 @@ namespace doLittle.DependencyInversion.Autofac
                     }
                     else if (binding.Strategy is Strategies.Callback)
                     {
-                        var registrationBuilder = containerBuilder.Register((context) => ((Strategies.Callback)binding.Strategy).Target()).As(binding.Service);
-                        if (binding.Scope is Scopes.Singleton) registrationBuilder = registrationBuilder.SingleInstance();
+                        var registrationBuilder = containerBuilder.Register((context)=>((Strategies.Callback)binding.Strategy).Target()).As(binding.Service);
+                        if (binding.Scope is Scopes.Singleton)registrationBuilder = registrationBuilder.SingleInstance();
 
                     }
                 }
@@ -93,7 +96,7 @@ namespace doLittle.DependencyInversion.Autofac
                 registrationSourceProviderTypes.ForEach(registrationSourceProviderType =>
                 {
                     ThrowIfRegistrationSourceProviderTypeIsMissingDefaultConstructor(registrationSourceProviderType);
-                    var registrationSourceProvider = Activator.CreateInstance(registrationSourceProviderType) as ICanProvideRegistrationSources;
+                    var registrationSourceProvider = Activator.CreateInstance(registrationSourceProviderType)as ICanProvideRegistrationSources;
                     var registrationSources = registrationSourceProvider.Provide();
                     registrationSources.ForEach(containerBuilder.RegisterSource);
                 });
@@ -102,7 +105,7 @@ namespace doLittle.DependencyInversion.Autofac
 
         void ThrowIfRegistrationSourceProviderTypeIsMissingDefaultConstructor(Type type)
         {
-            if( !type.HasDefaultConstructor() ) throw new RegistrationSourceProviderMustHaveADefaultConstructor(type);
+            if (!type.HasDefaultConstructor())throw new RegistrationSourceProviderMustHaveADefaultConstructor(type);
         }
     }
 }
