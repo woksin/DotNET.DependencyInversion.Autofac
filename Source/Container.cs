@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 using System;
 using Autofac;
+using Autofac.Multitenant;
 
 namespace Dolittle.DependencyInversion.Autofac
 {
@@ -20,7 +21,8 @@ namespace Dolittle.DependencyInversion.Autofac
         /// <param name="container"></param>
         public Container(global::Autofac.IContainer container)
         {
-            _container = container;
+            var tenantIdentificationStrategy = new TenantIdentificationStrategy(container);
+            _container = new MultitenantContainer(tenantIdentificationStrategy, container);
         }
 
         /// <inheritdoc/>
