@@ -12,7 +12,7 @@ using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using Dolittle.Assemblies;
 using Dolittle.Collections;
-using Dolittle.Execution;
+using Dolittle.Lifecycle;
 using Dolittle.Reflection;
 
 namespace Dolittle.DependencyInversion.Autofac
