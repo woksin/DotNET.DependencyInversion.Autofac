@@ -40,6 +40,7 @@ namespace Dolittle.DependencyInversion.Autofac
             selfBindingRegistrationSource.RegistrationConfiguration = HandleLifeCycleFor;
             
             containerBuilder.RegisterSource(selfBindingRegistrationSource);
+            containerBuilder.RegisterSource(new FactoryForRegistrationSource());
 
             DiscoverAndRegisterRegistrationSources(containerBuilder, allAssemblies);
 
@@ -84,7 +85,6 @@ namespace Dolittle.DependencyInversion.Autofac
                     {
                         var registrationBuilder = containerBuilder.Register((context)=>((Strategies.Callback)binding.Strategy).Target()).As(binding.Service);
                         if (binding.Scope is Scopes.Singleton)registrationBuilder = registrationBuilder.SingleInstance();
-
                     }
                 }
             });
