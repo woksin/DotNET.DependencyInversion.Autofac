@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Multitenant" Version="4.2.0" />
+    <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Dolittle.Assemblies" Version="2.0.0-alpha2*" />
     <PackageReference Include="Dolittle.DependencyInversion" Version="2.0.0-alpha2*" />
     <PackageReference Include="Dolittle.Execution" Version="2.0.0-alpha2*" />
