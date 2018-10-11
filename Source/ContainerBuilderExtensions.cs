@@ -43,7 +43,7 @@ namespace Dolittle.DependencyInversion.Autofac
             
             containerBuilder.RegisterSource(selfBindingRegistrationSource);
             containerBuilder.RegisterSource(new FactoryForRegistrationSource());
-
+            containerBuilder.RegisterSource(new OpenGenericTypeCallbackRegistrationSource());
             DiscoverAndRegisterRegistrationSources(containerBuilder, allAssemblies);
 
             RegisterUpBindingsIntoContainerBuilder(bindings, containerBuilder);
@@ -72,6 +72,10 @@ namespace Dolittle.DependencyInversion.Autofac
                         var registrationBuilder = containerBuilder.RegisterGeneric(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
                         if (binding.Scope is Scopes.Singleton)registrationBuilder = registrationBuilder.SingleInstance();
                         if (binding.Scope is Scopes.SingletonPerTenant)registrationBuilder = registrationBuilder.SingleInstance();
+                    }
+                    else if (binding.Strategy is Strategies.TypeCallback)
+                    {
+                        OpenGenericTypeCallbackRegistrationSource.AddService(new KeyValuePair<Type, Func<Type>>(binding.Service, ((Strategies.TypeCallback)binding.Strategy).Target));
                     }
                 }
                 else
