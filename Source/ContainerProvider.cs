@@ -18,7 +18,7 @@ namespace Dolittle.DependencyInversion.Autofac
             var containerBuilder = new ContainerBuilder();
             containerBuilder.AddDolittle(assemblies, bindings);
             var autofacContainer = containerBuilder.Build();
-            TenantScoper.Container = autofacContainer;
+            BindingsPerTenants.Container = autofacContainer;
             var container = new Container(autofacContainer);
             return container;
         }
