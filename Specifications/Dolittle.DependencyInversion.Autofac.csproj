@@ -2,7 +2,6 @@
     <Import Project="../Build/MSBuild/specs.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Dolittle.DependencyInversion.Autofac.Specs</AssemblyName>
   </PropertyGroup>
 
