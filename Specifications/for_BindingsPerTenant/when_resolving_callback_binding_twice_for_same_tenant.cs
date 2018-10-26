@@ -14,8 +14,8 @@ namespace Dolittle.DependencyInversion.Autofac.Specifications.for_BindingsPerTen
 
         Because of = () =>
         {
-            first_instance = BindingsPerTenants.Resolve(binding);
-            second_instance = BindingsPerTenants.Resolve(binding);
+            first_instance = BindingsPerTenants.Resolve(component_context,binding);
+            second_instance = BindingsPerTenants.Resolve(component_context,binding);
         };
 
         It should_result_in_same_instance = () => first_instance.ShouldEqual(second_instance);

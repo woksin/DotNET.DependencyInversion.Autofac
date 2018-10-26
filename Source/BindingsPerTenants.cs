@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac;
+using Autofac.Core.Resolving;
 using Dolittle.Execution;
 using Dolittle.Tenancy;
 
@@ -15,15 +16,13 @@ using Dolittle.Tenancy;
 
 namespace Dolittle.DependencyInversion.Autofac
 {
-    
     /// <summary>
     /// Represents a system for dealing with bindings per tenants
     /// </summary>
-    
     internal static class BindingsPerTenants
     {
         /// <summary>
-        /// Gets or sets the <see cref="global::Autofac.IContainer"/> to be used
+        /// Gets or sets the <see cref="IContainer"/> to be used
         /// </summary>
         internal static global::Autofac.IContainer Container;
 
@@ -50,9 +49,10 @@ namespace Dolittle.DependencyInversion.Autofac
         /// <summary>
         /// Resolve a particular binding for current tenant
         /// </summary>
+        /// <param name="context">The <see cref="IComponentContext"/> for the resolution</param>
         /// <param name="binding"><see cref="Binding"/> to resolve</param>
         /// <returns>Instance for the <see cref="TenantId">current tenant</see></returns>
-        public static object Resolve(Binding binding)
+        public static object Resolve(IComponentContext context, Binding binding)
         {
             lock(_instancesPerBindingPerTenant)
             {
@@ -66,7 +66,7 @@ namespace Dolittle.DependencyInversion.Autofac
 
                 object instance = null;
 
-                if (binding.Strategy is Strategies.Type) instance = CreateInstanceFor(binding);
+                if (binding.Strategy is Strategies.Type) instance = CreateInstanceFor(context, binding);
                 if (binding.Strategy is Strategies.Callback) instance = ((Strategies.Callback) binding.Strategy).Target();
 
                 instancesForTenants[tenant] = instance;
@@ -91,7 +91,7 @@ namespace Dolittle.DependencyInversion.Autofac
             return bindingsForTenants;
         }
 
-        static object CreateInstanceFor(Binding binding)
+        static object CreateInstanceFor(IComponentContext context, Binding binding)
         {
             object instance;
             var type = ((Strategies.Type) binding.Strategy).Target;
@@ -99,7 +99,18 @@ namespace Dolittle.DependencyInversion.Autofac
             if (constructors.Length > 1) throw new Exception($"Unable to create instance of '{type.AssemblyQualifiedName}' - more than one constructor");
             var constructor = constructors[0];
             var parameterInstances = constructor.GetParameters().Select(_ => Container.Resolve(_.ParameterType)).ToArray();
-            instance = Activator.CreateInstance(type, parameterInstances);
+
+            var instanceLookup = context as IInstanceLookup;
+
+            if( binding.Service.ContainsGenericParameters && instanceLookup != null ) 
+            {
+                instance = Activator.CreateInstance(instanceLookup.ComponentRegistration.Activator.LimitType, parameterInstances);
+            } 
+            else 
+            {
+                instance = Activator.CreateInstance(type, parameterInstances);
+            }
+            
             return instance;
         }
     }

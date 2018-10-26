@@ -4,7 +4,7 @@ using Machine.Specifications;
 
 namespace Dolittle.DependencyInversion.Autofac.Specifications.for_BindingsPerTenant
 {
-    public class when_resolving_callback_binding_for_two_different_tenants : given.callback_binding
+    public class when_resolving_generic_type_binding_for_two_different_tenants : given.generic_type_binding
     {
         static TenantId first_tenant = Guid.NewGuid();
         static TenantId second_tenant = Guid.NewGuid();

@@ -1,5 +1,7 @@
 
+using Autofac;
 using Machine.Specifications;
+using Moq;
 
 namespace Dolittle.DependencyInversion.Autofac.Specifications.for_BindingsPerTenant.given
 {
@@ -13,10 +15,11 @@ namespace Dolittle.DependencyInversion.Autofac.Specifications.for_BindingsPerTen
         }
 
         protected static Binding binding;
-
+        protected static IComponentContext component_context;
 
         Establish context = () =>
         {
+            component_context = Mock.Of<IComponentContext>();
             binding = new Binding(typeof(some_type), new Strategies.Callback(() => new some_type()), new Scopes.SingletonPerTenant());
         };
     }

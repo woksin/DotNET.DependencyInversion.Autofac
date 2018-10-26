@@ -9,6 +9,9 @@ using System.Reflection;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 using Autofac.Features.ResolveAnything;
 using Dolittle.Assemblies;
 using Dolittle.Collections;
@@ -34,6 +37,8 @@ namespace Dolittle.DependencyInversion.Autofac
             var allAssemblies = assemblies.GetAll().ToArray();
             containerBuilder.RegisterAssemblyModules(allAssemblies);
 
+            containerBuilder.RegisterBuildCallback(c => BindingsPerTenants.Container = c);
+
             var selfBindingRegistrationSource = new SelfBindingRegistrationSource(type => 
                 !type.Namespace.StartsWith("Microsoft") &&
                 !type.Namespace.StartsWith("System"));
@@ -56,7 +61,6 @@ namespace Dolittle.DependencyInversion.Autofac
             {
                 var typedService = service as TypedService;
                 if (typedService.ServiceType.HasAttribute<SingletonAttribute>())builder.SingleInstance();
-                //if (typedService.ServiceType.HasAttribute<SingletonPerTenantAttribute>()) builder.SingleInstance();
             }
         }
 
@@ -68,8 +72,14 @@ namespace Dolittle.DependencyInversion.Autofac
                 {
                     if (binding.Strategy is Strategies.Type)
                     {
-                        if (binding.Scope is Scopes.SingletonPerTenant) 
-                            containerBuilder.Register((context)=>BindingsPerTenants.Resolve(binding)).As(binding.Service);
+                        if (binding.Scope is Scopes.SingletonPerTenant)
+                        {
+                            var registrationBuilder = containerBuilder.RegisterGeneric(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
+                            registrationBuilder.OnActivating(e => {
+                                var instance = BindingsPerTenants.Resolve(e.Context, binding);
+                                e.ReplaceInstance(instance);
+                            });
+                        }
                         else 
                         {
                             var registrationBuilder = containerBuilder.RegisterGeneric(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
@@ -86,7 +96,7 @@ namespace Dolittle.DependencyInversion.Autofac
                     if (binding.Strategy is Strategies.Type)
                     {
                         if (binding.Scope is Scopes.SingletonPerTenant) 
-                            containerBuilder.Register((context)=>BindingsPerTenants.Resolve(binding)).As(binding.Service);
+                            containerBuilder.Register((context)=>BindingsPerTenants.Resolve(context, binding)).As(binding.Service);
                         else 
                         {
                             var registrationBuilder = containerBuilder.RegisterType(((Strategies.Type)binding.Strategy).Target).As(binding.Service);
@@ -100,7 +110,7 @@ namespace Dolittle.DependencyInversion.Autofac
                     else if (binding.Strategy is Strategies.Callback)
                     {
                         if (binding.Scope is Scopes.SingletonPerTenant) 
-                            containerBuilder.Register((context)=>BindingsPerTenants.Resolve(binding)).As(binding.Service);
+                            containerBuilder.Register((context)=>BindingsPerTenants.Resolve(context, binding)).As(binding.Service);
                         else 
                         {
                             var registrationBuilder = containerBuilder.Register((context)=>((Strategies.Callback)binding.Strategy).Target()).As(binding.Service);
