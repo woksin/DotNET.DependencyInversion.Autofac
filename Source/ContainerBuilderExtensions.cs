@@ -61,7 +61,6 @@ namespace Dolittle.DependencyInversion.Autofac
             {
                 var typedService = service as TypedService;
                 if (typedService.ServiceType.HasAttribute<SingletonAttribute>())builder.SingleInstance();
-                //if (typedService.ServiceType.HasAttribute<SingletonPerTenantAttribute>()) builder.SingleInstance();
             }
         }
 
