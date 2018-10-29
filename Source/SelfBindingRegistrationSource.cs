@@ -85,18 +85,9 @@ namespace Dolittle.DependencyInversion.Autofac
                 }
             }
 
-            if (ts.ServiceType.HasAttribute<SingletonPerTenantAttribute>())
-            {
-                var binding = new Binding(ts.ServiceType, new Strategies.Type(ts.ServiceType), new Scopes.Transient());
-                var builder = RegistrationBuilder.ForDelegate(ts.ServiceType, (context, parameters) => BindingsPerTenants.Resolve(context, binding));
-                return new [] { builder.CreateRegistration() };
-            }
-            else
-            {
-                var builder = RegistrationBuilder.ForType(ts.ServiceType);
-                RegistrationConfiguration?.Invoke(builder);
-                return new [] { builder.CreateRegistration() };
-            }
+            var builder = RegistrationBuilder.ForType(ts.ServiceType);
+            RegistrationConfiguration?.Invoke(builder);
+            return new [] { builder.CreateRegistration() };
         }
 
         /// <summary>
