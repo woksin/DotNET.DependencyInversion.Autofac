@@ -7,7 +7,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Core.Resolving;
 
-namespace Dolittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac.Tenancy
 {
     /// <summary>
     /// Represents an implementation of <see cref="ITypeActivator"/>

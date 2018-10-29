@@ -5,7 +5,7 @@
 using System;
 using Autofac;
 
-namespace Dolittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac.Tenancy
 {
     /// <summary>
     /// Defines a system that can activate

@@ -15,6 +15,7 @@ using Autofac.Core.Registration;
 using Autofac.Features.ResolveAnything;
 using Dolittle.Assemblies;
 using Dolittle.Collections;
+using Dolittle.DependencyInversion.Autofac.Tenancy;
 using Dolittle.Lifecycle;
 using Dolittle.Reflection;
 
@@ -43,9 +44,8 @@ namespace Dolittle.DependencyInversion.Autofac
 
             selfBindingRegistrationSource.RegistrationConfiguration = HandleLifeCycleFor;
 
-            var typeActivator = new TypeActivator(containerBuilder);
-            var instancesPerTenant = new InstancesPerTenant(containerBuilder, typeActivator);
-            containerBuilder.RegisterSource(new BindingsPerTenantsRegistrationSource(instancesPerTenant));
+            containerBuilder.AddBindingsPerTenantRegistrationSource();
+
             containerBuilder.RegisterSource(selfBindingRegistrationSource);
             containerBuilder.RegisterSource(new FactoryForRegistrationSource());
             containerBuilder.RegisterSource(new OpenGenericTypeCallbackRegistrationSource());

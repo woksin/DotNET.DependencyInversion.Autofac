@@ -12,7 +12,7 @@ using Autofac.Core.Registration;
 using Dolittle.Lifecycle;
 using Dolittle.Reflection;
 
-namespace Dolittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac.Tenancy
 {
     /// <summary>
     /// Represents a <see cref="IRegistrationSource"/> that deals with 

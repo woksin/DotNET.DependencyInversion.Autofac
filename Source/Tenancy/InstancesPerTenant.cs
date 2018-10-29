@@ -4,13 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Autofac;
-using Dolittle.Collections;
 using Dolittle.Execution;
-using Dolittle.Tenancy;
 
-namespace Dolittle.DependencyInversion.Autofac
+namespace Dolittle.DependencyInversion.Autofac.Tenancy
 {
 
     /// <summary>
@@ -19,18 +16,18 @@ namespace Dolittle.DependencyInversion.Autofac
     public class InstancesPerTenant
     {
         Dictionary<string, object> _instancesPerKey = new Dictionary<string, object>();       
-        IExecutionContextManager _executionContextManager;
         private readonly ITypeActivator _activator;
+        private readonly ITenantKeyCreator _tenantKeyCreator;
 
         /// <summary>
         /// Initializes a new instance of <see cref="InstancesPerTenant"/>
         /// </summary>
-        /// <param name="containerBuilder"><see cref="ContainerBuilder"/> used for building the container</param>
+        /// <param name="tenantKeyCreator"></param>
         /// <param name="activator"><see cref="ITypeActivator"/> to use for activating types into instances</param>
-        public InstancesPerTenant(ContainerBuilder containerBuilder, ITypeActivator activator)
+        public InstancesPerTenant(ITenantKeyCreator tenantKeyCreator, ITypeActivator activator)
         {
-            containerBuilder.RegisterBuildCallback(c => _executionContextManager = c.Resolve<IExecutionContextManager>());
             _activator = activator;
+            _tenantKeyCreator = tenantKeyCreator;
         }
  
 
@@ -45,8 +42,7 @@ namespace Dolittle.DependencyInversion.Autofac
         {
             lock (_instancesPerKey)
             {
-                var key = GetKeyFrom(
-                    _executionContextManager.Current.Tenant,
+                var key = _tenantKeyCreator.GetKeyFor(
                     binding,
                     service);
                 if (_instancesPerKey.ContainsKey(key)) return _instancesPerKey[key];
@@ -75,18 +71,6 @@ namespace Dolittle.DependencyInversion.Autofac
                 _instancesPerKey[key] = instance;
                 return instance;
             }
-        }
-
-        string GetKeyFrom(TenantId tenant, Binding binding, Type service)
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append(tenant);
-            stringBuilder.Append("-");
-            stringBuilder.Append(binding.Service.AssemblyQualifiedName);
-            if( service.IsGenericType ) 
-                service.GetGenericArguments().ForEach(_ => stringBuilder.Append($"-{_.AssemblyQualifiedName}"));
-
-            return stringBuilder.ToString();
         }
     }
 }
