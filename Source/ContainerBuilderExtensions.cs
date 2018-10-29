@@ -37,15 +37,15 @@ namespace Dolittle.DependencyInversion.Autofac
             var allAssemblies = assemblies.GetAll().ToArray();
             containerBuilder.RegisterAssemblyModules(allAssemblies);
 
-            containerBuilder.RegisterBuildCallback(c => BindingsPerTenantsRegistrationSource.Container = c);
-
             var selfBindingRegistrationSource = new SelfBindingRegistrationSource(type => 
                 !type.Namespace.StartsWith("Microsoft") &&
                 !type.Namespace.StartsWith("System"));
 
             selfBindingRegistrationSource.RegistrationConfiguration = HandleLifeCycleFor;
-            
-            containerBuilder.RegisterSource(new BindingsPerTenantsRegistrationSource());
+
+            var typeActivator = new TypeActivator(containerBuilder);
+            var instancesPerTenant = new InstancesPerTenant(containerBuilder, typeActivator);
+            containerBuilder.RegisterSource(new BindingsPerTenantsRegistrationSource(instancesPerTenant));
             containerBuilder.RegisterSource(selfBindingRegistrationSource);
             containerBuilder.RegisterSource(new FactoryForRegistrationSource());
             containerBuilder.RegisterSource(new OpenGenericTypeCallbackRegistrationSource());

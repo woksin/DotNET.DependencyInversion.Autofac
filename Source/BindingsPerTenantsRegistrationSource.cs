@@ -5,18 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autofac;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
-using Autofac.Core.Resolving;
-using Dolittle.Collections;
-using Dolittle.Execution;
 using Dolittle.Lifecycle;
 using Dolittle.Reflection;
-using Dolittle.Tenancy;
 
 namespace Dolittle.DependencyInversion.Autofac
 {
@@ -26,14 +20,16 @@ namespace Dolittle.DependencyInversion.Autofac
     public class BindingsPerTenantsRegistrationSource : IRegistrationSource
     {
         static List<Binding> _bindings = new List<Binding>();
-
-        static Dictionary<string, object> _instancesPerKey = new Dictionary<string, object>();
+        readonly InstancesPerTenant _instancesPerTenant;
 
         /// <summary>
-        /// Gets or sets the <see cref="IContainer"/> to be used
+        /// Initializes a new instance of <see cref="BindingsPerTenantsRegistrationSource"/>
         /// </summary>
-        internal static global::Autofac.IContainer Container;
-
+        /// <param name="instancesPerTenant"></param>
+        public BindingsPerTenantsRegistrationSource(InstancesPerTenant instancesPerTenant)
+        {
+            _instancesPerTenant = instancesPerTenant;
+        }
 
         /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => false;
@@ -53,7 +49,6 @@ namespace Dolittle.DependencyInversion.Autofac
             var serviceWithType = service as IServiceWithType;
             if( serviceWithType == null ) return Enumerable.Empty<IComponentRegistration>();
 
-
             if (serviceWithType.ServiceType.HasAttribute<SingletonPerTenantAttribute>() &&
                 (!HasService(serviceWithType.ServiceType) &&
                 !IsGenericAndHasGenericService(serviceWithType.ServiceType)))
@@ -68,7 +63,11 @@ namespace Dolittle.DependencyInversion.Autofac
 
             var registration = new ComponentRegistration(
                 Guid.NewGuid(),
-                new DelegateActivator(serviceWithType.ServiceType, (c, p) => GetOrCreateInstance(c, serviceWithType)),
+
+                new DelegateActivator(serviceWithType.ServiceType, 
+                    (c, p) => 
+                        _instancesPerTenant.Resolve(c, GetBindingFor(serviceWithType.ServiceType), serviceWithType.ServiceType)),
+
                 new CurrentScopeLifetime(),
                 InstanceSharing.None,
                 InstanceOwnership.OwnedByLifetimeScope,
@@ -78,68 +77,6 @@ namespace Dolittle.DependencyInversion.Autofac
             
             return new[] { registration };
         }
-
-        object GetOrCreateInstance(IComponentContext c, IServiceWithType serviceWithType)
-        {
-            lock (_instancesPerKey)
-            {
-                var binding = GetBindingFor(serviceWithType.ServiceType);
-                var key = GetKeyFrom(
-                    ExecutionContextManager.Current.Tenant,
-                    binding,
-                    serviceWithType);
-                if (_instancesPerKey.ContainsKey(key)) return _instancesPerKey[key];
-
-                object instance = null;
-                switch (binding.Strategy)
-                {
-                    case Strategies.Type type:
-                        instance = CreateInstanceFor(c, binding.Service, type.Target);
-                        break;
-
-                    case Strategies.Constant constant:
-                        instance = constant.Target;
-                        break;
-
-                    case Strategies.Callback callback:
-                        instance = callback.Target();
-                        break;
-
-                    case Strategies.TypeCallback typeCallback:
-                        var typeFromCallback = typeCallback.Target();
-                        instance = CreateInstanceFor(c, binding.Service, typeFromCallback);
-                        break;
-                }
-
-                _instancesPerKey[key] = instance;
-                return instance;
-            }
-        }
-
-        object CreateInstanceFor(IComponentContext context, Type service, Type type)
-        {
-            object instance;
-            var constructors = type.GetConstructors().ToArray();
-            if (constructors.Length > 1) throw new Exception($"Unable to create instance of '{type.AssemblyQualifiedName}' - more than one constructor");
-            var constructor = constructors[0];
-            var parameterInstances = constructor.GetParameters().Select(_ => Container.Resolve(_.ParameterType)).ToArray();
-
-            var instanceLookup = context as IInstanceLookup;
-
-            if( service.ContainsGenericParameters ) 
-            {
-                var genericArguments = instanceLookup.ComponentRegistration.Activator.LimitType.GetGenericArguments();
-                var targetType = type.MakeGenericType(genericArguments);
-                instance = Activator.CreateInstance(targetType, parameterInstances);
-            } 
-            else 
-            {
-                instance = Activator.CreateInstance(type, parameterInstances);
-            }
-            
-            return instance;
-        }
-
 
         bool HasService(Type service)
         {
@@ -158,35 +95,5 @@ namespace Dolittle.DependencyInversion.Autofac
             if( binding == null ) throw new ArgumentException($"Couldn't find a binding for service {service.AssemblyQualifiedName}");
             return binding;
         }
-
-        string GetKeyFrom(TenantId tenant, Binding binding, IServiceWithType service)
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append(tenant);
-            stringBuilder.Append("-");
-            stringBuilder.Append(binding.Service.AssemblyQualifiedName);
-            if( service.ServiceType.IsGenericType ) 
-                service.ServiceType.GetGenericArguments().ForEach(_ => stringBuilder.Append($"-{_.AssemblyQualifiedName}"));
-
-            return stringBuilder.ToString();
-        }
-
-        IExecutionContextManager _executionContextManager;
-
-        IExecutionContextManager ExecutionContextManager
-        {
-            get
-            {
-                if (_executionContextManager == null)
-                    _executionContextManager = Container.Resolve<IExecutionContextManager>();
-
-                return _executionContextManager;
-            }
-
-            set
-            {
-                _executionContextManager = value;
-            }
-        }
-    }
+   }
 }
