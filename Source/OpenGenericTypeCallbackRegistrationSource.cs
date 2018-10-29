@@ -14,8 +14,10 @@ using Autofac.Core.Registration;
 
 namespace Dolittle.DependencyInversion.Autofac
 {
+
+
     /// <summary>
-    /// Represents a <see cref="IRegistrationSource"/> that deals with resolving <see cref="FactoryFor{T}"/>
+    /// Represents a <see cref="IRegistrationSource"/> that deals with resolving open generic type callbacks
     /// </summary>
     public class OpenGenericTypeCallbackRegistrationSource : IRegistrationSource
     {
