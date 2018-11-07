@@ -19,7 +19,7 @@ namespace Dolittle.DependencyInversion.Autofac.Tenancy
         IExecutionContextManager _executionContextManager;
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of <see cref="TenantKeyCreator"/>
         /// </summary>
         /// <param name="containerBuilder"><see cref="ContainerBuilder"/> used for building the container</param>
         public TenantKeyCreator(ContainerBuilder containerBuilder)
