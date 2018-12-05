@@ -52,7 +52,6 @@ namespace Dolittle.DependencyInversion.Autofac
             DiscoverAndRegisterRegistrationSources(containerBuilder, allAssemblies);
 
             RegisterUpBindingsIntoContainerBuilder(bindings, containerBuilder);
-
         }
 
         static void HandleLifeCycleFor(IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> builder)
