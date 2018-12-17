@@ -8,10 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Dolittle.Assemblies" Version="2.0.0-alpha2*" />
-    <PackageReference Include="Dolittle.DependencyInversion" Version="2.0.0-alpha2*" />
-    <PackageReference Include="Dolittle.Execution" Version="2.0.0-alpha2*" />
-    <PackageReference Include="Dolittle.Lifecycle" Version="2.0.0-alpha2*" />
+    <PackageReference Include="Dolittle.Assemblies" Version="2.*" />
+    <PackageReference Include="Dolittle.DependencyInversion" Version="2.*" />
+    <PackageReference Include="Dolittle.Execution" Version="2.*" />
+    <PackageReference Include="Dolittle.Lifecycle" Version="2.*" />
   </ItemGroup>
 
 </Project>
